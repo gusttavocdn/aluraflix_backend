@@ -19,10 +19,19 @@
     <ItemGroup>
       <Compile Remove="WeatherForecast.cs" />
       <Compile Remove="Controllers\WeatherForecastController.cs" />
+      <Compile Remove="Data\Seeds\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <EmbeddedResource Remove="Data\Seeds\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Data\Seeds\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Data\Seeds\**" />
     </ItemGroup>
 
 </Project>
