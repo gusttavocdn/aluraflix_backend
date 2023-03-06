@@ -21,4 +21,14 @@ public class VideoController : ControllerBase
         var videos = _context.Videos.ToList();
         return Ok(videos);
     }
+
+    [HttpGet("{id:guid}")]
+    public IActionResult GetVideoById(Guid id)
+    {
+        var video = _context.Videos.Find(id);
+
+        if (video == null) return NotFound(new { message = "Video not found" });
+        
+        return Ok(video);
+    }
 }
