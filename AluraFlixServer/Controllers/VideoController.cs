@@ -21,13 +21,18 @@ public class VideoController : ControllerBase
     }
 
     [HttpGet]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(IEnumerable<ReadVideoDTO>), 200)]
     public IActionResult GetVideos()
     {
         IEnumerable<ReadVideoDTO> videos = _mapper.Map<List<ReadVideoDTO>>(_context.Videos.ToList());
         return Ok(videos);
     }
 
+
     [HttpGet("{id:guid}")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(ReadVideoDTO), 200)]
     public IActionResult GetVideoById(Guid id)
     {
         var video = _context.Videos.Find(id);
@@ -39,16 +44,20 @@ public class VideoController : ControllerBase
     }
 
     [HttpPost]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(VideoDTO), 201)]
     public IActionResult AddVideo([FromBody] VideoDTO videoDTO)
     {
         var newVideo = _mapper.Map<Video>(videoDTO);
 
         _context.Videos.Add(newVideo);
         _context.SaveChanges();
-        return Ok(newVideo);
+        return CreatedAtAction(nameof(GetVideoById), new { id = newVideo.Id }, videoDTO);
     }
 
     [HttpPut("{id:guid}")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(VideoDTO), 200)]
     public IActionResult UpdateVideo(Guid id, [FromBody] VideoDTO updateVideoDTO)
     {
         var video = _context.Videos.Find(id);
@@ -58,10 +67,13 @@ public class VideoController : ControllerBase
         _mapper.Map(updateVideoDTO, video);
         _context.SaveChanges();
 
-        return Ok(video);
+        var videoResponse = _mapper.Map<VideoDTO>(video);
+        return Ok(videoResponse);
     }
 
     [HttpPatch("{id:guid}")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(VideoDTO), 200)]
     public IActionResult PatchVideo(Guid id, [FromBody] JsonPatchDocument<VideoDTO> patchDocument)
     {
         var video = _context.Videos.Find(id);
@@ -74,10 +86,11 @@ public class VideoController : ControllerBase
         _mapper.Map(videoDTO, video);
         _context.SaveChanges();
 
-        return Ok(video);
+        return Ok(videoDTO);
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(204)]
     public IActionResult DeleteVideo(Guid id)
     {
         var video = _context.Videos.Find(id);

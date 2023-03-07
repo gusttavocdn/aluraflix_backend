@@ -10,5 +10,5 @@ public class VideoDTO
 
     [Required] [Url] public string Url { get; set; } = "";
 
-    public int CategoryId { get; set; }
+    public int CategoryId { get; set; } = 1;
 }
