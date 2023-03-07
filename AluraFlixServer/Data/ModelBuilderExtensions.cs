@@ -41,7 +41,7 @@ public static class ModelBuilderExtensions
             {
                 Id = 1,
                 Title = "LIVRE",
-                color = "#FFFFFF"
+                Color = "#FFFFFF"
             }
         );
     }

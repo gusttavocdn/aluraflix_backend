@@ -1,5 +1,3 @@
-using AluraFlixServer.Models;
-
 namespace AluraFlixServer.Dtos;
 
 public class ReadVideoDTO
@@ -8,6 +6,7 @@ public class ReadVideoDTO
     public string? Title { get; set; }
     public string? Description { get; set; }
     public string? Url { get; set; }
+
     public int CategoryId { get; set; }
-    public Category Category { get; set; }
+    public ReadCategoryDTO? Category { get; set; }
 }

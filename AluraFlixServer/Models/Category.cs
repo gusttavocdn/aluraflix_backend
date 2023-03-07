@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AluraFlixServer.Models;
 
@@ -6,9 +7,9 @@ public class Category
 {
     [Key] [Required] public int Id { get; set; }
 
-    [Required] public string Title { get; set; } = "";
+    [Required] public string Title { get; init; } = "";
 
-    [Required] public string color { get; set; } = "";
+    [Required] public string Color { get; init; } = "";
 
     public virtual ICollection<Video>? Videos { get; set; }
 }
