@@ -9,5 +9,7 @@ public class CategoryProfile : Profile
     public CategoryProfile()
     {
         CreateMap<Category, ReadCategoryDTO>();
+        CreateMap<CategoryDTO, Category>();
+        CreateMap<Category, CategoryDTO>();
     }
 }

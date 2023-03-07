@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AluraFlixServer.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class VideoController : ControllerBase
 {
     private readonly ApplicationDbContext _context;

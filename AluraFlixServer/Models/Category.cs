@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
 
 namespace AluraFlixServer.Models;
 
@@ -11,5 +12,5 @@ public class Category
 
     [Required] public string Color { get; init; } = "";
 
-    public virtual ICollection<Video>? Videos { get; set; }
+    [JsonIgnore] public virtual ICollection<Video>? Videos { get; set; }
 }
