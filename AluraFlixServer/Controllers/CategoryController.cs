@@ -20,64 +20,80 @@ public class CategoryController : ControllerBase
         _mapper = mapper;
     }
 
-
     [HttpGet]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(IEnumerable<CategoryResponse>), 200)]
     public IActionResult GetCategories()
     {
-        IEnumerable<ReadCategoryDTO> categories = _mapper.Map<List<ReadCategoryDTO>>(_context.Categories.ToList());
+        IEnumerable<CategoryResponse> categories = _mapper.Map<List<CategoryResponse>>(
+            _context.Categories.ToList());
         return Ok(categories);
     }
 
-    [HttpGet("{id}", Name = "Get")]
+    [HttpGet("{id:int}")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(CategoryResponse), 200)]
     public IActionResult GetCategory(int id)
     {
         var category = _context.Categories.Find(id);
 
         if (category == null) return NotFound(new { message = "Category not found" });
 
-        var readCategoryDTO = _mapper.Map<ReadCategoryDTO>(category);
-        return Ok(readCategoryDTO);
+        var categoryResponse = _mapper.Map<CategoryResponse>(category);
+        return Ok(categoryResponse);
     }
 
     [HttpPost]
-    public IActionResult AddCategory([FromBody] CategoryDTO categoryDTO)
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(CategoryResponse), 201)]
+    public IActionResult AddCategory([FromBody] CategoryRequest categoryRequest)
     {
-        var newCategory = _mapper.Map<Category>(categoryDTO);
+        var newCategory = _mapper.Map<Category>(categoryRequest);
 
         _context.Categories.Add(newCategory);
         _context.SaveChanges();
-        return Ok(newCategory);
+
+        var categoryResponse = _mapper.Map<CategoryResponse>(newCategory);
+        return Ok(categoryResponse);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult UpdateCategory(int id, [FromBody] CategoryDTO updateCategoryDTO)
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(CategoryResponse), 200)]
+    public IActionResult UpdateCategory(int id, [FromBody] CategoryRequest updateCategoryRequest)
     {
         var category = _context.Categories.Find(id);
 
         if (category == null) return NotFound(new { message = "Category not found" });
 
-        _mapper.Map(updateCategoryDTO, category);
+        _mapper.Map(updateCategoryRequest, category);
         _context.SaveChanges();
-        return Ok(category);
+
+        var categoryResponse = _mapper.Map<CategoryResponse>(category);
+        return Ok(categoryResponse);
     }
 
     [HttpPatch("{id:int}")]
-    public IActionResult PatchCategory(int id, [FromBody] JsonPatchDocument<CategoryDTO> patchDocument)
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(CategoryResponse), 200)]
+    public IActionResult PatchCategory(int id, [FromBody] JsonPatchDocument<CategoryRequest> patchDocument)
     {
         var category = _context.Categories.Find(id);
 
         if (category == null) return NotFound(new { message = "Category not found" });
 
-        var categoryDTO = _mapper.Map<CategoryDTO>(category);
+        var categoryDTO = _mapper.Map<CategoryRequest>(category);
         patchDocument.ApplyTo(categoryDTO);
 
         _mapper.Map(categoryDTO, category);
         _context.SaveChanges();
 
-        return Ok(category);
+        var categoryResponse = _mapper.Map<CategoryResponse>(category);
+        return Ok(categoryResponse);
     }
 
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
     public IActionResult Delete(int id)
     {
         var category = _context.Categories.Find(id);
@@ -97,8 +113,8 @@ public class CategoryController : ControllerBase
         var category = _context.Categories.Find(id);
         var videos = _context.Videos.Where(x => x.CategoryId == category.Id).ToList();
 
-        var videosDTO = _mapper.Map<List<VideoRequest>>(videos);
+        var videosResponse = _mapper.Map<List<VideoRequest>>(videos);
 
-        return Ok(videosDTO);
+        return Ok(videosResponse);
     }
 }

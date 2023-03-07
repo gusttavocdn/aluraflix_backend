@@ -12,5 +12,5 @@ public class Category
 
     [Required] public string Color { get; init; } = "";
 
-    [JsonIgnore] public virtual ICollection<Video>? Videos { get; set; }
+    public virtual ICollection<Video>? Videos { get; set; }
 }
