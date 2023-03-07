@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AluraFlixServer.Controllers;
 
 [ApiController]
-[Route("[controller]/{id:guid}")]
+[Route("[controller]")]
 public class VideoController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -23,18 +23,19 @@ public class VideoController : ControllerBase
     [HttpGet]
     public IActionResult GetVideos()
     {
-        IEnumerable<Video> videos = _context.Videos.ToList();
+        IEnumerable<ReadVideoDTO> videos = _mapper.Map<List<ReadVideoDTO>>(_context.Videos.ToList());
         return Ok(videos);
     }
 
-    [HttpGet("")]
+    [HttpGet("{id:guid}")]
     public IActionResult GetVideoById(Guid id)
     {
         var video = _context.Videos.Find(id);
 
         if (video == null) return NotFound(new { message = "Video not found" });
 
-        return Ok(video);
+        var readVideoDTO = _mapper.Map<ReadVideoDTO>(video);
+        return Ok(readVideoDTO);
     }
 
     [HttpPost]
@@ -47,7 +48,7 @@ public class VideoController : ControllerBase
         return Ok(newVideo);
     }
 
-    [HttpPut("")]
+    [HttpPut("{id:guid}")]
     public IActionResult UpdateVideo(Guid id, [FromBody] VideoDTO updateVideoDTO)
     {
         var video = _context.Videos.Find(id);
@@ -60,7 +61,7 @@ public class VideoController : ControllerBase
         return Ok(video);
     }
 
-    [HttpPatch("")]
+    [HttpPatch("{id:guid}")]
     public IActionResult PatchVideo(Guid id, [FromBody] JsonPatchDocument<VideoDTO> patchDocument)
     {
         var video = _context.Videos.Find(id);
@@ -76,7 +77,7 @@ public class VideoController : ControllerBase
         return Ok(video);
     }
 
-    [HttpDelete("")]
+    [HttpDelete("{id:guid}")]
     public IActionResult DeleteVideo(Guid id)
     {
         var video = _context.Videos.Find(id);

@@ -19,11 +19,41 @@ namespace AluraFlixServer.Migrations
                 .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("AluraFlixServer.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("color")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "LIVRE",
+                            color = "#FFFFFF"
+                        });
+                });
+
             modelBuilder.Entity("AluraFlixServer.Models.Video", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -39,37 +69,59 @@ namespace AluraFlixServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Videos");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("cba0e571-f2dd-4abb-91aa-cea6bdb82598"),
+                            Id = new Guid("1eddffeb-990b-4126-9bd4-f5be76b92212"),
+                            CategoryId = 1,
                             Description = "O anime mais injustiçado da temporada (na minha humilde opinião haha) voltou! Nier Automata 1.1a ep. 4 comentado em detalhes aqui pra vocês.",
                             Title = "QUE BATALHA EMOCIONANTE!! ELE VOLTOU!",
                             Url = "https://www.youtube.com/watch?v=zZvRCSlkH18"
                         },
                         new
                         {
-                            Id = new Guid("1ef44de0-57cc-4002-9323-5d0362e8e3de"),
+                            Id = new Guid("c6de1e62-0b2b-4647-87cb-4eca4b6d8234"),
+                            CategoryId = 1,
                             Description = "2V2  @prohooper4533    Nosso SEGUNDO desafio do grupo de racha, as próximas semanas, vou fazer um vídeo explicando o intuito dos novos desafio aqui do canal e do PRO HOOPER, espero que vocês gostem e até o próximo video familina, tmj!",
                             Title = "ARREMESSEI IGUAL O STEPHEN CURRY E ACABEI COM O JOGO!!!",
                             Url = "https://www.youtube.com/watch?v=GIYtwPu5Heo&t=166s"
                         },
                         new
                         {
-                            Id = new Guid("2fa6ea31-d3c1-4ebb-8589-50a1f4978b6b"),
+                            Id = new Guid("967bc22d-1b2e-43a5-a418-0f9f77451ac5"),
+                            CategoryId = 1,
                             Description = "Depoimento Ange Emanuelle na Alura",
                             Title = "Dev Front-end: a trajetória de uma programadora e Alura Star | Angela Emanuelle",
                             Url = "https://www.youtube.com/watch?v=ODEgEk83PLA"
                         },
                         new
                         {
-                            Id = new Guid("e4bf1d7b-11c8-4a35-9a8e-64aece75336f"),
+                            Id = new Guid("9adef798-a5fe-4a53-89a7-aaad27ba1554"),
+                            CategoryId = 1,
                             Description = "Kang VS THANOS, EINERD explicação com Peter JORDAN",
                             Title = "DEFINITIVO! KANG VS THANOS, QUEM É O PIOR E MAIS CRUEL?",
                             Url = "https://www.youtube.com/watch?v=umTFii323Lg"
                         });
+                });
+
+            modelBuilder.Entity("AluraFlixServer.Models.Video", b =>
+                {
+                    b.HasOne("AluraFlixServer.Models.Category", "Category")
+                        .WithMany("Videos")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("AluraFlixServer.Models.Category", b =>
+                {
+                    b.Navigation("Videos");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,13 +5,23 @@ namespace AluraFlixServer.Data;
 
 public class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-        : base(options) {}
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
 
     public DbSet<Video> Videos { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       modelBuilder.Seed();
+        modelBuilder.Entity<Video>()
+            .HasOne(video => video.Category)
+            .WithMany(category => category.Videos)
+            .HasForeignKey(video => video.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+        modelBuilder.Seed();
     }
 }
