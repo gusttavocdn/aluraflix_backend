@@ -1,6 +1,6 @@
 namespace AluraFlixServer.Dtos;
 
-public class ReadVideoDTO
+public class VideoResponse
 {
     public Guid Id { get; set; }
     public string? Title { get; set; }
@@ -8,5 +8,4 @@ public class ReadVideoDTO
     public string? Url { get; set; }
 
     public int CategoryId { get; set; }
-    public ReadCategoryDTO? Category { get; set; }
 }

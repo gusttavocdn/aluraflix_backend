@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AluraFlixServer.Dtos;
 
-public class VideoDTO
+public class VideoRequest
 {
     [Required] public string Title { get; set; } = "";
 

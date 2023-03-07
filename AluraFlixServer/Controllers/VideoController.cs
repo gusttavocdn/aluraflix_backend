@@ -23,77 +23,80 @@ public class VideoController : ControllerBase
 
     [HttpGet]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<ReadVideoDTO>), 200)]
+    [ProducesResponseType(typeof(IEnumerable<VideoResponse>), 200)]
     public IActionResult GetVideos([FromQuery] string? search)
     {
         var videos = _context.Videos.AsQueryable();
 
-        if (string.IsNullOrEmpty(search)) return Ok(videos.ToList());
+        if (string.IsNullOrEmpty(search)) return Ok(_mapper.Map<List<VideoResponse>>(videos.ToList()));
 
         var filteredVideos = videos.Where(v =>
             v.Title.Contains(search));
 
-        return Ok(filteredVideos.ToList());
+        var videosResponse = _mapper.Map<List<VideoResponse>>(filteredVideos.ToList());
+        return Ok(videosResponse);
     }
-
 
     [HttpGet("{id:guid}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(ReadVideoDTO), 200)]
+    [ProducesResponseType(typeof(VideoResponse), 200)]
     public IActionResult GetVideoById(Guid id)
     {
         var video = _context.Videos.Find(id);
 
         if (video == null) return NotFound(new { message = "Video not found" });
 
-        var readVideoDTO = _mapper.Map<ReadVideoDTO>(video);
-        return Ok(readVideoDTO);
+        var videoResponse = _mapper.Map<VideoResponse>(video);
+        return Ok(videoResponse);
     }
 
     [HttpPost]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(VideoDTO), 201)]
-    public IActionResult AddVideo([FromBody] VideoDTO videoDTO)
+    [ProducesResponseType(typeof(VideoResponse), 201)]
+    public IActionResult AddVideo([FromBody] VideoRequest videoRequest)
     {
-        var newVideo = _mapper.Map<Video>(videoDTO);
+        var newVideo = _mapper.Map<Video>(videoRequest);
 
         _context.Videos.Add(newVideo);
         _context.SaveChanges();
-        return CreatedAtAction(nameof(GetVideoById), new { id = newVideo.Id }, videoDTO);
+
+        var videoResponse = _mapper.Map<VideoResponse>(newVideo);
+        return CreatedAtAction(nameof(GetVideoById), new { id = videoResponse.Id }, videoResponse);
     }
 
     [HttpPut("{id:guid}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(VideoDTO), 200)]
-    public IActionResult UpdateVideo(Guid id, [FromBody] VideoDTO updateVideoDTO)
+    [ProducesResponseType(typeof(VideoResponse), 200)]
+    public IActionResult UpdateVideo(Guid id, [FromBody] VideoRequest updateVideoRequest)
     {
         var video = _context.Videos.Find(id);
 
         if (video == null) return NotFound(new { message = "Video not found" });
 
-        _mapper.Map(updateVideoDTO, video);
+        _mapper.Map(updateVideoRequest, video);
         _context.SaveChanges();
 
-        var videoResponse = _mapper.Map<VideoDTO>(video);
+        var videoResponse = _mapper.Map<VideoResponse>(video);
         return Ok(videoResponse);
     }
 
     [HttpPatch("{id:guid}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(VideoDTO), 200)]
-    public IActionResult PatchVideo(Guid id, [FromBody] JsonPatchDocument<VideoDTO> patchDocument)
+    [ProducesResponseType(typeof(VideoResponse), 200)]
+    public IActionResult PatchVideo(Guid id, [FromBody] JsonPatchDocument<VideoRequest> patchDocument)
     {
         var video = _context.Videos.Find(id);
 
         if (video == null) return NotFound(new { message = "Video not found" });
 
-        var videoDTO = _mapper.Map<VideoDTO>(video);
-        patchDocument.ApplyTo(videoDTO);
+        var videoRequest = _mapper.Map<VideoRequest>(video);
+        patchDocument.ApplyTo(videoRequest);
 
-        _mapper.Map(videoDTO, video);
+        _mapper.Map(videoRequest, video);
         _context.SaveChanges();
 
-        return Ok(videoDTO);
+        var videoResponse = _mapper.Map<VideoResponse>(video);
+        return Ok(videoResponse);
     }
 
     [HttpDelete("{id:guid}")]
