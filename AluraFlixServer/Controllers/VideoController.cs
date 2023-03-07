@@ -1,3 +1,4 @@
+using System.Globalization;
 using AluraFlixServer.Data;
 using AluraFlixServer.Dtos;
 using AluraFlixServer.Models;
@@ -23,10 +24,16 @@ public class VideoController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<ReadVideoDTO>), 200)]
-    public IActionResult GetVideos()
+    public IActionResult GetVideos([FromQuery] string? search)
     {
-        IEnumerable<ReadVideoDTO> videos = _mapper.Map<List<ReadVideoDTO>>(_context.Videos.ToList());
-        return Ok(videos);
+        var videos = _context.Videos.AsQueryable();
+
+        if (string.IsNullOrEmpty(search)) return Ok(videos.ToList());
+
+        var filteredVideos = videos.Where(v =>
+            v.Title.Contains(search));
+
+        return Ok(filteredVideos.ToList());
     }
 
 
