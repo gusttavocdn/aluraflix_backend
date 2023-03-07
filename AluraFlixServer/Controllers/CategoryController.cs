@@ -88,4 +88,17 @@ public class CategoryController : ControllerBase
         _context.SaveChanges();
         return NoContent();
     }
+
+    [HttpGet("{id:int}/videos")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(List<VideoDTO>), 200)]
+    public IActionResult GetVideosByCategory(int id)
+    {
+        var category = _context.Categories.Find(id);
+        var videos = _context.Videos.Where(x => x.CategoryId == category.Id).ToList();
+
+        var videosDTO = _mapper.Map<List<VideoDTO>>(videos);
+
+        return Ok(videosDTO);
+    }
 }
