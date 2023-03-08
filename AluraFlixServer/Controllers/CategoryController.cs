@@ -23,10 +23,11 @@ public class CategoryController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<CategoryResponse>), 200)]
-    public IActionResult GetCategories()
+    public IActionResult GetCategories([FromQuery] int page = 1)
     {
+        var skip = (page - 1) * 5;
         IEnumerable<CategoryResponse> categories = _mapper.Map<List<CategoryResponse>>(
-            _context.Categories.ToList());
+            _context.Categories.Skip(skip).Take(5).ToList());
         return Ok(categories);
     }
 
@@ -82,10 +83,10 @@ public class CategoryController : ControllerBase
 
         if (category == null) return NotFound(new { message = "Category not found" });
 
-        var categoryDTO = _mapper.Map<CategoryRequest>(category);
-        patchDocument.ApplyTo(categoryDTO);
+        var categoryRequest = _mapper.Map<CategoryRequest>(category);
+        patchDocument.ApplyTo(categoryRequest);
 
-        _mapper.Map(categoryDTO, category);
+        _mapper.Map(categoryRequest, category);
         _context.SaveChanges();
 
         var categoryResponse = _mapper.Map<CategoryResponse>(category);
@@ -111,6 +112,9 @@ public class CategoryController : ControllerBase
     public IActionResult GetVideosByCategory(int id)
     {
         var category = _context.Categories.Find(id);
+
+        if (category == null) return NotFound(new { message = "Category not found" });
+
         var videos = _context.Videos.Where(x => x.CategoryId == category.Id).ToList();
 
         var videosResponse = _mapper.Map<List<VideoRequest>>(videos);

@@ -24,17 +24,24 @@ public class VideoController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<VideoResponse>), 200)]
-    public IActionResult GetVideos([FromQuery] string? search)
+    public IActionResult GetVideos([FromQuery] string? search, int page = 1)
     {
+        var skip = (page - 1) * 5;
         var videos = _context.Videos.AsQueryable();
 
-        if (string.IsNullOrEmpty(search)) return Ok(_mapper.Map<List<VideoResponse>>(videos.ToList()));
+        if (string.IsNullOrEmpty(search))
+        {
+            var videosResponse = _mapper.Map<List<VideoResponse>>(
+                videos.Skip(skip).Take(5).ToList());
+            return Ok(videosResponse);
+        }
 
         var filteredVideos = videos.Where(v =>
             v.Title.Contains(search));
 
-        var videosResponse = _mapper.Map<List<VideoResponse>>(filteredVideos.ToList());
-        return Ok(videosResponse);
+        var filteredVideosResponse = _mapper.Map<List<VideoResponse>>(
+            filteredVideos.Skip(skip).Take(5).ToList());
+        return Ok(filteredVideosResponse);
     }
 
     [HttpGet("{id:guid}")]
