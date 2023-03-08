@@ -2,6 +2,7 @@ using AluraFlixServer.Data;
 using AluraFlixServer.Dtos;
 using AluraFlixServer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace AluraFlixServer.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CategoryController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -19,6 +21,14 @@ public class CategoryController : ControllerBase
         _context = context;
         _mapper = mapper;
     }
+
+    // [HttpGet]
+    // [Route("auth")]
+    // public IActionResult Authenticated()
+    // {
+    //     var s = $"AUTHORIZED - {User.Identity.Name}";
+    //     return Ok(new { message = s });
+    // }
 
     [HttpGet]
     [Produces("application/json")]
