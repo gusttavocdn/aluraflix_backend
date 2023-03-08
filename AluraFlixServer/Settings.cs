@@ -4,7 +4,7 @@ namespace AluraFlixServer;
 
 public static class Settings
 {
-    public static string Secret = GenerateKey();
+    public static readonly string Secret = GenerateKey();
 
     private static string GenerateKey()
     {

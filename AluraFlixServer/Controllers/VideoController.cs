@@ -3,6 +3,7 @@ using AluraFlixServer.Data;
 using AluraFlixServer.Dtos;
 using AluraFlixServer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace AluraFlixServer.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class VideoController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
